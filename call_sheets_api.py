@@ -4,9 +4,6 @@
 # Created on January 2022
 # This program calls Google Sheets API
 
-from datetime import datetime
-from tokenize import String
-from xmlrpc.client import DateTime
 import gspread
 
 # Accessing Google Spreadsheet service account
