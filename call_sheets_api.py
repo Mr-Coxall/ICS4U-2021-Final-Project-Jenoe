@@ -15,7 +15,9 @@ sh = sa.open("ReminderClock")
 wks = sh.worksheet("Reminder Data")
 
 # Gets Reminder Text
+# Cell format (ColumnRow)
 print(wks.acell('A2').value)
 
 # Gets Time Value from spreadsheet and converts it into datetime value
+# Cell format (row, column)
 print(wks.cell(2, 2).value)
