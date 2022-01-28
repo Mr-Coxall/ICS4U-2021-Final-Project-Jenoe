@@ -4,8 +4,9 @@
 # Created on January 2022
 # This program prints the current time
 
-import time
+from datetime import datetime
+import pytz
 
-t = time.localtime()
-current_time = time.strftime("%H:%M", t)
-print(current_time)
+tz_NY = pytz.timezone('America/New_York') 
+datetime_NY = datetime.now(tz_NY)
+print(datetime_NY.strftime("%H:%M"))
