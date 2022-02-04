@@ -17,7 +17,8 @@ from adafruit_matrixportal.matrix import Matrix
 BLINK = True
 DEBUG = False
 
-# Gets wifi details and more from a secrets.py file
+# Gets wifi details and account information from a secrets.py file
+# to access adafruitio API
 try:
     from secrets import secrets
 except ImportError:
@@ -39,8 +40,8 @@ bitmap = displayio.Bitmap(64, 32, 2)
 color = displayio.Palette(4)  # Create a color palette
 color[0] = 0x000000  # background
 color[1] = 0xFFFFFF  # white
-color[2] = 0xCC4000  # amber
-color[3] = 0x85FF00  # greenish
+color[2] = 0xFF0000  # amber
+color[3] = 0x85FF00  # green
 
 # Create a TileGrid using the Bitmap and Palette
 tile_grid = displayio.TileGrid(bitmap, pixel_shader=color)
