@@ -59,11 +59,7 @@ def update_time(*, hours=None, minutes=None, show_colon=False):
     now = time.localtime()
     if hours is None:
         hours = now[3]
-    if hours >= constants.NIGHT or hours < constants.MORNING:
-        clock_label.color = color[1]
-    # Daylight hours
-    else:
-        clock_label.color = color[1]
+    clock_label.color = color[1]
     # Time later than 12:59
     if hours > constants.MIL_TO_STAND:
         hours -= constants.MIL_TO_STAND

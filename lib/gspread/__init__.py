@@ -37,5 +37,4 @@ def authorize(credentials, client_class=Client):
     :returns: `client_class` instance.
     """
 
-    client = client_class(auth=credentials)
-    return client
+    return client_class(auth=credentials)

@@ -507,13 +507,11 @@ class Worksheet:
         """
         range_name = absolute_range_name(self.title, rowcol_to_a1(row, col))
 
-        data = self.spreadsheet.values_update(
+        return self.spreadsheet.values_update(
             range_name,
             params={"valueInputOption": ValueInputOption.user_entered},
             body={"values": [[value]]},
         )
-
-        return data
 
     def update_cells(self, cell_list, value_input_option=ValueInputOption.raw):
         """Updates many cells at once.
@@ -557,13 +555,11 @@ class Worksheet:
 
         range_name = absolute_range_name(self.title, "{}:{}".format(start, end))
 
-        data = self.spreadsheet.values_update(
+        return self.spreadsheet.values_update(
             range_name,
             params={"valueInputOption": value_input_option},
             body={"values": values_rect},
         )
-
-        return data
 
     @accepted_kwargs(
         major_dimension=None,
@@ -748,15 +744,13 @@ class Worksheet:
             }
         )
 
-        response = self.spreadsheet.values_update(
+        return self.spreadsheet.values_update(
             range_name,
             params=params,
             body=filter_dict_values(
                 {"values": values, "majorDimension": kwargs["major_dimension"]}
             ),
         )
-
-        return response
 
     @accepted_kwargs(
         raw=True,
@@ -824,9 +818,7 @@ class Worksheet:
             }
         )
 
-        response = self.spreadsheet.values_batch_update(body=body)
-
-        return response
+        return self.spreadsheet.values_batch_update(body=body)
 
     def format(self, range_name, cell_format):
         """Formats a cell or a group of cells.
@@ -899,7 +891,7 @@ class Worksheet:
         if not grid_properties:
             raise TypeError("Either 'rows' or 'cols' should be specified.")
 
-        fields = ",".join("gridProperties/%s" % p for p in grid_properties.keys())
+        fields = ",".join("gridProperties/%s" % p for p in grid_properties)
 
         body = {
             "requests": [
@@ -939,9 +931,7 @@ class Worksheet:
 
         .. versionadded:: 3.4
         """
-        range_name = kwargs.pop("range", None)
-
-        if range_name:
+        if range_name := kwargs.pop("range", None):
             start_a1, end_a1 = range_name.split(":")
             start_row, start_col = a1_to_rowcol(start_a1)
             end_row, end_col = a1_to_rowcol(end_a1)
@@ -959,7 +949,7 @@ class Worksheet:
             "endColumnIndex": end_col,
         }
 
-        request_sort_specs = list()
+        request_sort_specs = []
         for col, order in specs:
             if order == "asc":
                 request_order = "ASCENDING"
@@ -986,8 +976,7 @@ class Worksheet:
             ]
         }
 
-        response = self.spreadsheet.batch_update(body)
-        return response
+        return self.spreadsheet.batch_update(body)
 
     def update_title(self, title):
         """Renames the worksheet.
@@ -1420,9 +1409,7 @@ class Worksheet:
 
         body = {"ranges": ranges}
 
-        response = self.spreadsheet.values_batch_clear(body=body)
-
-        return response
+        return self.spreadsheet.values_batch_clear(body=body)
 
     def _finder(self, func, query, in_row=None, in_column=None):
         data = self.spreadsheet.values_get(absolute_range_name(self.title))
@@ -1513,7 +1500,7 @@ class Worksheet:
         if not grid_properties:
             raise TypeError("Either 'rows' or 'cols' should be specified.")
 
-        fields = ",".join("gridProperties/%s" % p for p in grid_properties.keys())
+        fields = ",".join("gridProperties/%s" % p for p in grid_properties)
 
         body = {
             "requests": [

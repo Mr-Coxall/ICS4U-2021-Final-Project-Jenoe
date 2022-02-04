@@ -161,8 +161,7 @@ def oauth(
         creds = flow(client_config=client_config, scopes=scopes)
         store_credentials(creds, filename=authorized_user_filename)
 
-    client = Client(auth=creds)
-    return client
+    return Client(auth=creds)
 
 
 def oauth_from_dict(

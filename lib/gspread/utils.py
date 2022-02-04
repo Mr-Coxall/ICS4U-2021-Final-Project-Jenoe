@@ -136,19 +136,13 @@ def numericise(
         # replace comma separating thousands to match python format
         cleaned_value = value.replace(",", "")
         try:
-            int_value = int(cleaned_value)
-            return int_value
+            return int(cleaned_value)
         except ValueError:
             try:
-                float_value = float(cleaned_value)
-                return float_value
+                return float(cleaned_value)
             except ValueError:
                 if value == "":
-                    if empty2zero:
-                        value = 0
-                    else:
-                        value = default_blank
-
+                    value = 0 if empty2zero else default_blank
     return value
 
 
@@ -173,7 +167,7 @@ def numericise_all(
         numericising.
     """
     ignored_rows = [input[x - 1] for x in (ignore or [])]
-    numericised_list = [
+    return [
         s
         if s in ignored_rows
         else numericise(
@@ -184,7 +178,6 @@ def numericise_all(
         )
         for s in input
     ]
-    return numericised_list
 
 
 def rowcol_to_a1(row, col):
@@ -222,9 +215,7 @@ def rowcol_to_a1(row, col):
             div -= 1
         column_label = chr(mod + MAGIC_NUMBER) + column_label
 
-    label = "{}{}".format(column_label, row)
-
-    return label
+    return "{}{}".format(column_label, row)
 
 
 def a1_to_rowcol(label):
@@ -242,16 +233,16 @@ def a1_to_rowcol(label):
     (1, 1)
 
     """
-    m = CELL_ADDR_RE.match(label)
-    if m:
-        column_label = m.group(1).upper()
-        row = int(m.group(2))
-
-        col = 0
-        for i, c in enumerate(reversed(column_label)):
-            col += (ord(c) - MAGIC_NUMBER) * (26 ** i)
-    else:
+    if not (m := CELL_ADDR_RE.match(label)):
         raise IncorrectCellLabel(label)
+
+    column_label = m.group(1).upper()
+    row = int(m.group(2))
+
+    col = sum(
+        (ord(c) - MAGIC_NUMBER) * (26 ** i)
+        for i, c in enumerate(reversed(column_label))
+    )
 
     return (row, col)
 
@@ -295,24 +286,21 @@ def _a1_to_rowcol_unbounded(label):
     (inf, inf)
 
     """
-    m = A1_ADDR_ROW_COL_RE.match(label)
-    if m:
-        column_label, row = m.groups()
-
-        if column_label:
-            col = 0
-            for i, c in enumerate(reversed(column_label.upper())):
-                col += (ord(c) - MAGIC_NUMBER) * (26 ** i)
-        else:
-            col = inf
-
-        if row:
-            row = int(row)
-        else:
-            row = inf
-    else:
+    if not (m := A1_ADDR_ROW_COL_RE.match(label)):
         raise IncorrectCellLabel(label)
 
+    column_label, row = m.groups()
+
+    if column_label:
+        col = sum(
+            (ord(c) - MAGIC_NUMBER) * (26 ** i)
+            for i, c in enumerate(reversed(column_label.upper()))
+        )
+
+    else:
+        col = inf
+
+    row = int(row) if row else inf
     return (row, col)
 
 
@@ -406,12 +394,10 @@ def cast_to_a1_notation(method):
 
 
 def extract_id_from_url(url):
-    m2 = URL_KEY_V2_RE.search(url)
-    if m2:
+    if m2 := URL_KEY_V2_RE.search(url):
         return m2.group(1)
 
-    m1 = URL_KEY_V1_RE.search(url)
-    if m1:
+    if m1 := URL_KEY_V1_RE.search(url):
         return m1.group(1)
 
     raise NoValidUrlKeyFound
@@ -435,9 +421,7 @@ def fill_gaps(L, rows=None, cols=None):
         max_cols = max(len(row) for row in L) if cols is None else cols
         max_rows = len(L) if rows is None else rows
 
-        pad_rows = max_rows - len(L)
-
-        if pad_rows:
+        if pad_rows := max_rows - len(L):
             L = L + ([[]] * pad_rows)
 
         return [rightpad(row, max_cols) for row in L]
@@ -499,10 +483,7 @@ def absolute_range_name(sheet_name, range_name=None):
     """
     sheet_name = "'{}'".format(sheet_name.replace("'", "''"))
 
-    if range_name:
-        return "{}!{}".format(sheet_name, range_name)
-    else:
-        return sheet_name
+    return "{}!{}".format(sheet_name, range_name) if range_name else sheet_name
 
 
 def is_scalar(x):
@@ -589,8 +570,7 @@ def accepted_kwargs(**default_kwargs):
     def decorate(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            unexpected_kwargs = set(kwargs) - set(default_kwargs)
-            if unexpected_kwargs:
+            if unexpected_kwargs := set(kwargs) - set(default_kwargs):
                 err = "%s got unexpected keyword arguments: %s"
                 raise TypeError(err % (f.__name__, list(unexpected_kwargs)))
 

@@ -367,9 +367,7 @@ class Spreadsheet:
 
         properties = data["replies"][0]["addSheet"]["properties"]
 
-        worksheet = Worksheet(self, properties)
-
-        return worksheet
+        return Worksheet(self, properties)
 
     def duplicate_sheet(
         self,
@@ -413,9 +411,7 @@ class Spreadsheet:
 
         properties = data["replies"][0]["duplicateSheet"]["properties"]
 
-        worksheet = Worksheet(self, properties)
-
-        return worksheet
+        return Worksheet(self, properties)
 
     def del_worksheet(self, worksheet):
         """Deletes a worksheet from a spreadsheet.
